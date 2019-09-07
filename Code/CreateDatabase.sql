@@ -120,3 +120,39 @@ ALTER TABLE public."StatePCE"
     OWNER to postgres;
 COMMENT ON TABLE public."StatePCE"
     IS 'Personal Consumer Expenditure by State';
+
+-- Table: public."RestaurantCategory"
+
+-- DROP TABLE public."RestaurantCategory";
+
+C-- Table: public."RestaurantCategory"
+
+-- DROP TABLE public."RestaurantCategory";
+
+CREATE TABLE public."RestaurantCategory"
+(
+    "Id" integer NOT NULL,
+    "RestaurantId" integer NOT NULL,
+    "CategoryId" integer NOT NULL,
+    CONSTRAINT "RestaurantCategory_pkey1" PRIMARY KEY ("Id"),
+    CONSTRAINT "RestaurantCategory_UDX1" UNIQUE ("RestaurantId", "CategoryId")
+,
+    CONSTRAINT "RestaurantCategory_FK1" FOREIGN KEY ("RestaurantId")
+        REFERENCES public."Restaturant" ("Id") MATCH SIMPLE
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+    CONSTRAINT "RestaurantCategory_FK2" FOREIGN KEY ("CategoryId")
+        REFERENCES public."Category" ("Id") MATCH SIMPLE
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+)
+WITH (
+    OIDS = FALSE
+)
+TABLESPACE pg_default;
+
+ALTER TABLE public."RestaurantCategory"
+    OWNER to postgres;
+
+
+
