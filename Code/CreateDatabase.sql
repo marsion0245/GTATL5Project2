@@ -172,7 +172,11 @@ CREATE TABLE public."StatePopulation"
     "Date" date NOT NULL,
     CONSTRAINT "StatePopulation_PK" PRIMARY KEY ("Id"),
     CONSTRAINT "StatePopulation_UIDX1" UNIQUE ("StateId", "Year")
-
+,
+    CONSTRAINT "StatePopulation_FK1" FOREIGN KEY ("StateId")
+        REFERENCES public."State" ("Id") MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
 )
 WITH (
     OIDS = FALSE
@@ -181,6 +185,7 @@ TABLESPACE pg_default;
 
 ALTER TABLE public."StatePopulation"
     OWNER to postgres;
+
 	
 
 
