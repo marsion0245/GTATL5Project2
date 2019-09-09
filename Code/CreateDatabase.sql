@@ -166,9 +166,9 @@ CREATE TABLE public.state_population
     id integer NOT NULL GENERATED ALWAYS AS IDENTITY ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1 ),
     state_id integer NOT NULL,
     population integer NOT NULL,
-    year date NOT NULL,
+    year integer NOT NULL,
     source_id integer NOT NULL,
-    modified_date date NOT NULL,
+    modified_date timestamp(4) with time zone NOT NULL DEFAULT now(),
     CONSTRAINT state_population_pk PRIMARY KEY (id),
     CONSTRAINT state_population_udx1 UNIQUE (state_id, year)
 ,
@@ -184,9 +184,6 @@ TABLESPACE pg_default;
 
 ALTER TABLE public.state_population
     OWNER to postgres;
-	
-
-
 
 
 	
