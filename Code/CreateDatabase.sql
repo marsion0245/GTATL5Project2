@@ -15,19 +15,20 @@ CREATE DATABASE "ETLproject"
 COMMENT ON DATABASE "ETLproject"
     IS 'Database created to store project data';
 	
--- Table: public."Category"
 
--- DROP TABLE public."Category";
+-- Table: public.category
 
-CREATE TABLE public."Category"
+-- DROP TABLE public.category;
+
+CREATE TABLE public.category
 (
-    "Id" integer NOT NULL GENERATED ALWAYS AS IDENTITY ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1 ),
-    "Alias" character varying(100) COLLATE pg_catalog."default" NOT NULL,
-    "Title" character varying(250) COLLATE pg_catalog."default" NOT NULL,
-    "SourceId" integer NOT NULL,
-    "Date" date NOT NULL,
-    CONSTRAINT "Category_PK" PRIMARY KEY ("Id"),
-    CONSTRAINT "Category_UIDX1" UNIQUE ("Alias")
+    id integer NOT NULL GENERATED ALWAYS AS IDENTITY ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1 ),
+    alias character varying(100) COLLATE pg_catalog."default" NOT NULL,
+    title character varying(250) COLLATE pg_catalog."default" NOT NULL,
+    source_id integer NOT NULL,
+    modified_date date NOT NULL,
+    CONSTRAINT category_pk PRIMARY KEY (id),
+    CONSTRAINT category_uidx1 UNIQUE (alias)
 
 )
 WITH (
@@ -35,33 +36,32 @@ WITH (
 )
 TABLESPACE pg_default;
 
-ALTER TABLE public."Category"
+ALTER TABLE public.category
     OWNER to postgres;
-	
 
--- Table: public."Restaturant"
+-- Table: public.restaurant
 
--- DROP TABLE public."Restaturant";
+-- DROP TABLE public.restaurant;
 
-CREATE TABLE public."Restaturant"
+CREATE TABLE public.restaurant
 (
-    "Id" integer NOT NULL GENERATED ALWAYS AS IDENTITY ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1 ),
-    "Name" character varying(250) COLLATE pg_catalog."default" NOT NULL,
-    "BusinessId" character varying(100) COLLATE pg_catalog."default" NOT NULL,
-    "StateId" integer NOT NULL,
-    "City" character varying(100) COLLATE pg_catalog."default" NOT NULL,
-    "Street" character varying(250) COLLATE pg_catalog."default" NOT NULL,
-    "ZipCode" character varying(10) COLLATE pg_catalog."default" NOT NULL,
-    "PriceRange" integer NOT NULL,
-    "Rating" numeric(3,1) NOT NULL,
-    "IsClosed" boolean NOT NULL,
-    "SourceId" integer NOT NULL,
-    "Date" date NOT NULL,
-    CONSTRAINT "Restaturant_PK" PRIMARY KEY ("Id"),
-    CONSTRAINT "Restaurant_UIDX1" UNIQUE ("BusinessId")
+    id integer NOT NULL GENERATED ALWAYS AS IDENTITY ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1 ),
+    name character varying(250) COLLATE pg_catalog."default" NOT NULL,
+    business_id character varying(100) COLLATE pg_catalog."default" NOT NULL,
+    state_id integer NOT NULL,
+    city character varying(100) COLLATE pg_catalog."default" NOT NULL,
+    street character varying(250) COLLATE pg_catalog."default" NOT NULL,
+    zip_code character varying(10) COLLATE pg_catalog."default" NOT NULL,
+    price_range integer NOT NULL,
+    rating numeric(3,1) NOT NULL,
+    is_closed boolean NOT NULL,
+    source_id integer NOT NULL,
+    modified_date date NOT NULL,
+    CONSTRAINT restaurant_pk PRIMARY KEY (id),
+    CONSTRAINT restaurant_uidx1 UNIQUE (business_id)
 ,
-    CONSTRAINT "Restaurant_FK1" FOREIGN KEY ("StateId")
-        REFERENCES public."State" ("Id") MATCH SIMPLE
+    CONSTRAINT restaurant_fk1 FOREIGN KEY (state_id)
+        REFERENCES public.state (id) MATCH SIMPLE
         ON UPDATE NO ACTION
         ON DELETE NO ACTION
 )
@@ -70,28 +70,28 @@ WITH (
 )
 TABLESPACE pg_default;
 
-ALTER TABLE public."Restaturant"
+ALTER TABLE public.restaurant
     OWNER to postgres;
 	
+	
+-- Table: public.restaurant_category
 
--- Table: public."RestaurantCategory"
+-- DROP TABLE public.restaurant_category;
 
--- DROP TABLE public."RestaurantCategory";
-
-CREATE TABLE public."RestaurantCategory"
+CREATE TABLE public.restaurant_category
 (
-    "Id" integer NOT NULL GENERATED ALWAYS AS IDENTITY ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1 ),
-    "RestaurantId" integer NOT NULL,
-    "CategoryId" integer NOT NULL,
-    CONSTRAINT "RestaurantCategory_PK" PRIMARY KEY ("Id"),
-    CONSTRAINT "RestaurantCategory_UDX1" UNIQUE ("RestaurantId", "CategoryId")
+    id integer NOT NULL GENERATED ALWAYS AS IDENTITY ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1 ),
+    restaurant_id integer NOT NULL,
+    category_id integer NOT NULL,
+    CONSTRAINT restaurant_category_pk PRIMARY KEY (id),
+    CONSTRAINT restaurant_category_udx1 UNIQUE (restaurant_id, category_id)
 ,
-    CONSTRAINT "RestaurantCategory_FK1" FOREIGN KEY ("RestaurantId")
-        REFERENCES public."Restaturant" ("Id") MATCH SIMPLE
+    CONSTRAINT restaurant_category_fk1 FOREIGN KEY (restaurant_id)
+        REFERENCES public.restaurant (id) MATCH SIMPLE
         ON UPDATE CASCADE
         ON DELETE CASCADE,
-    CONSTRAINT "RestaurantCategory_FK2" FOREIGN KEY ("CategoryId")
-        REFERENCES public."Category" ("Id") MATCH SIMPLE
+    CONSTRAINT restaurant_category_fk2 FOREIGN KEY (category_id)
+        REFERENCES public.category (id) MATCH SIMPLE
         ON UPDATE CASCADE
         ON DELETE CASCADE
 )
@@ -100,21 +100,21 @@ WITH (
 )
 TABLESPACE pg_default;
 
-ALTER TABLE public."RestaurantCategory"
+ALTER TABLE public.restaurant_category
     OWNER to postgres;
 	
+	
+-- Table: public.state
 
--- Table: public."State"
+-- DROP TABLE public.state;
 
--- DROP TABLE public."State";
-
-CREATE TABLE public."State"
+CREATE TABLE public.state
 (
-    "Id" integer NOT NULL,
-    "Name" character varying(50) COLLATE pg_catalog."default" NOT NULL,
-    "Name_A2" character(2) COLLATE pg_catalog."default" NOT NULL,
-    CONSTRAINT "State_PK" PRIMARY KEY ("Id"),
-    CONSTRAINT "State_UIDX1" UNIQUE ("Name_A2")
+    id integer NOT NULL,
+    name character varying(50) COLLATE pg_catalog."default" NOT NULL,
+    name_a2 character(2) COLLATE pg_catalog."default" NOT NULL,
+    CONSTRAINT state_pk PRIMARY KEY (id),
+    CONSTRAINT state_uidx1 UNIQUE (name_a2)
 
 )
 WITH (
@@ -122,28 +122,27 @@ WITH (
 )
 TABLESPACE pg_default;
 
-ALTER TABLE public."State"
+ALTER TABLE public.state
     OWNER to postgres;
-	
 
--- Table: public."StatePCE"
+-- Table: public.state_pce
 
--- DROP TABLE public."StatePCE";
+-- DROP TABLE public.state_pce;
 
-CREATE TABLE public."StatePCE"
+CREATE TABLE public.state_pce
 (
-    "Id" integer NOT NULL GENERATED ALWAYS AS IDENTITY ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1 ),
-    "StateId" integer NOT NULL,
-    "Year" date NOT NULL,
-    "OffPremisesFoodBeverages" integer NOT NULL,
-    "ChangePct" numeric(5,2) NOT NULL,
-    "SourceId" integer NOT NULL,
-    "Date" date NOT NULL,
-    CONSTRAINT "StatePCE_PK" PRIMARY KEY ("Id"),
-    CONSTRAINT "StatePCE_UIDX1" UNIQUE ("StateId", "Year")
+    id integer NOT NULL GENERATED ALWAYS AS IDENTITY ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1 ),
+    state_id integer NOT NULL,
+    year date NOT NULL,
+    off_premises_food_beverages integer NOT NULL,
+    change_pct numeric(5,2) NOT NULL,
+    source_id integer NOT NULL,
+    modified_date date NOT NULL,
+    CONSTRAINT state_pce_pk PRIMARY KEY (id),
+    CONSTRAINT state_pce_udx1 UNIQUE (state_id, year)
 ,
-    CONSTRAINT "StatePCE_FK1" FOREIGN KEY ("StateId")
-        REFERENCES public."State" ("Id") MATCH SIMPLE
+    CONSTRAINT state_pce_fk1 FOREIGN KEY (state_id)
+        REFERENCES public.state (id) MATCH SIMPLE
         ON UPDATE NO ACTION
         ON DELETE NO ACTION
 )
@@ -152,29 +151,29 @@ WITH (
 )
 TABLESPACE pg_default;
 
-ALTER TABLE public."StatePCE"
+ALTER TABLE public.state_pce
     OWNER to postgres;
-COMMENT ON TABLE public."StatePCE"
-    IS 'Personal Consumer Expenditure by State';
+COMMENT ON TABLE public.state_pce
+    IS 'Personal Consumption Expenditure per State';
 	
 
--- Table: public."StatePopulation"
+-- Table: public.state_population
 
--- DROP TABLE public."StatePopulation";
+-- DROP TABLE public.state_population;
 
-CREATE TABLE public."StatePopulation"
+CREATE TABLE public.state_population
 (
-    "Id" integer NOT NULL GENERATED ALWAYS AS IDENTITY ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1 ),
-    "StateId" integer NOT NULL,
-    "Population" integer NOT NULL,
-    "Year" date NOT NULL,
-    "SourceId" integer NOT NULL,
-    "Date" date NOT NULL,
-    CONSTRAINT "StatePopulation_PK" PRIMARY KEY ("Id"),
-    CONSTRAINT "StatePopulation_UIDX1" UNIQUE ("StateId", "Year")
+    id integer NOT NULL GENERATED ALWAYS AS IDENTITY ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1 ),
+    state_id integer NOT NULL,
+    population integer NOT NULL,
+    year date NOT NULL,
+    source_id integer NOT NULL,
+    modified_date date NOT NULL,
+    CONSTRAINT state_population_pk PRIMARY KEY (id),
+    CONSTRAINT state_population_udx1 UNIQUE (state_id, year)
 ,
-    CONSTRAINT "StatePopulation_FK1" FOREIGN KEY ("StateId")
-        REFERENCES public."State" ("Id") MATCH SIMPLE
+    CONSTRAINT state_population_fk1 FOREIGN KEY (state_id)
+        REFERENCES public.state (id) MATCH SIMPLE
         ON UPDATE NO ACTION
         ON DELETE NO ACTION
 )
@@ -183,12 +182,11 @@ WITH (
 )
 TABLESPACE pg_default;
 
-ALTER TABLE public."StatePopulation"
+ALTER TABLE public.state_population
     OWNER to postgres;
-
 	
 
 
 
-	
 
+	
