@@ -16,6 +16,88 @@ COMMENT ON DATABASE "ETLproject"
     IS 'Database created to store project data';
 	
 
+-- Table: public.state
+
+-- DROP TABLE public.state;
+
+CREATE TABLE public.state
+(
+    id integer NOT NULL,
+    name character varying(50) COLLATE pg_catalog."default" NOT NULL,
+    name_a2 character(2) COLLATE pg_catalog."default" NOT NULL,
+    CONSTRAINT state_pk PRIMARY KEY (id),
+    CONSTRAINT state_uidx1 UNIQUE (name_a2)
+
+)
+WITH (
+    OIDS = FALSE
+)
+TABLESPACE pg_default;
+
+ALTER TABLE public.state
+    OWNER to postgres;
+
+-- Table: public.state_population
+
+-- DROP TABLE public.state_population;
+
+CREATE TABLE public.state_population
+(
+    id integer NOT NULL GENERATED ALWAYS AS IDENTITY ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1 ),
+    state_id integer NOT NULL,
+    population integer NOT NULL,
+    year integer NOT NULL,
+    source_id integer NOT NULL,
+    modified_date timestamp(4) with time zone NOT NULL DEFAULT now(),
+    CONSTRAINT state_population_pk PRIMARY KEY (id),
+    CONSTRAINT state_population_udx1 UNIQUE (state_id, year)
+,
+    CONSTRAINT state_population_fk1 FOREIGN KEY (state_id)
+        REFERENCES public.state (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+)
+WITH (
+    OIDS = FALSE
+)
+TABLESPACE pg_default;
+
+ALTER TABLE public.state_population
+    OWNER to postgres;
+
+
+-- Table: public.state_pce
+
+-- DROP TABLE public.state_pce;
+
+CREATE TABLE public.state_pce
+(
+    id integer NOT NULL GENERATED ALWAYS AS IDENTITY ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1 ),
+    state_id integer NOT NULL,
+    year date NOT NULL,
+    off_premises_food_beverages integer NOT NULL,
+    change_pct numeric(5,2) NOT NULL,
+    source_id integer NOT NULL,
+    modified_date date NOT NULL,
+    CONSTRAINT state_pce_pk PRIMARY KEY (id),
+    CONSTRAINT state_pce_udx1 UNIQUE (state_id, year)
+,
+    CONSTRAINT state_pce_fk1 FOREIGN KEY (state_id)
+        REFERENCES public.state (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+)
+WITH (
+    OIDS = FALSE
+)
+TABLESPACE pg_default;
+
+ALTER TABLE public.state_pce
+    OWNER to postgres;
+COMMENT ON TABLE public.state_pce
+    IS 'Personal Consumption Expenditure per State';
+	
+
 -- Table: public.category
 
 -- DROP TABLE public.category;
@@ -38,6 +120,7 @@ TABLESPACE pg_default;
 
 ALTER TABLE public.category
     OWNER to postgres;
+
 
 -- Table: public.restaurant
 
@@ -103,87 +186,5 @@ TABLESPACE pg_default;
 ALTER TABLE public.restaurant_category
     OWNER to postgres;
 	
-	
--- Table: public.state
-
--- DROP TABLE public.state;
-
-CREATE TABLE public.state
-(
-    id integer NOT NULL,
-    name character varying(50) COLLATE pg_catalog."default" NOT NULL,
-    name_a2 character(2) COLLATE pg_catalog."default" NOT NULL,
-    CONSTRAINT state_pk PRIMARY KEY (id),
-    CONSTRAINT state_uidx1 UNIQUE (name_a2)
-
-)
-WITH (
-    OIDS = FALSE
-)
-TABLESPACE pg_default;
-
-ALTER TABLE public.state
-    OWNER to postgres;
-
--- Table: public.state_pce
-
--- DROP TABLE public.state_pce;
-
-CREATE TABLE public.state_pce
-(
-    id integer NOT NULL GENERATED ALWAYS AS IDENTITY ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1 ),
-    state_id integer NOT NULL,
-    year date NOT NULL,
-    off_premises_food_beverages integer NOT NULL,
-    change_pct numeric(5,2) NOT NULL,
-    source_id integer NOT NULL,
-    modified_date date NOT NULL,
-    CONSTRAINT state_pce_pk PRIMARY KEY (id),
-    CONSTRAINT state_pce_udx1 UNIQUE (state_id, year)
-,
-    CONSTRAINT state_pce_fk1 FOREIGN KEY (state_id)
-        REFERENCES public.state (id) MATCH SIMPLE
-        ON UPDATE NO ACTION
-        ON DELETE NO ACTION
-)
-WITH (
-    OIDS = FALSE
-)
-TABLESPACE pg_default;
-
-ALTER TABLE public.state_pce
-    OWNER to postgres;
-COMMENT ON TABLE public.state_pce
-    IS 'Personal Consumption Expenditure per State';
-	
-
--- Table: public.state_population
-
--- DROP TABLE public.state_population;
-
-CREATE TABLE public.state_population
-(
-    id integer NOT NULL GENERATED ALWAYS AS IDENTITY ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1 ),
-    state_id integer NOT NULL,
-    population integer NOT NULL,
-    year integer NOT NULL,
-    source_id integer NOT NULL,
-    modified_date timestamp(4) with time zone NOT NULL DEFAULT now(),
-    CONSTRAINT state_population_pk PRIMARY KEY (id),
-    CONSTRAINT state_population_udx1 UNIQUE (state_id, year)
-,
-    CONSTRAINT state_population_fk1 FOREIGN KEY (state_id)
-        REFERENCES public.state (id) MATCH SIMPLE
-        ON UPDATE NO ACTION
-        ON DELETE NO ACTION
-)
-WITH (
-    OIDS = FALSE
-)
-TABLESPACE pg_default;
-
-ALTER TABLE public.state_population
-    OWNER to postgres;
 
 
-	
